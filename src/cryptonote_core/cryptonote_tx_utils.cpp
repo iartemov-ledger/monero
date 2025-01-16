@@ -218,7 +218,7 @@ namespace cryptonote
     amount_keys.clear();
 
     tx.version = rct ? 2 : 1;
-    tx.unlock_time = 0;
+    tx.unlock_time = 234;
 
     tx.extra = extra;
     crypto::public_key txkey_pub;
