@@ -34,6 +34,7 @@
 #include "common/command_line.h"
 #include "tx_pool.h"
 #include "transaction_tests.h"
+#include "transaction_tests_ledger.h"
 
 #include <boost/regex.hpp>
 
@@ -46,6 +47,7 @@ namespace
   const command_line::arg_descriptor<bool>        arg_play_test_data              = {"play_test_data", ""};
   const command_line::arg_descriptor<bool>        arg_generate_and_play_test_data = {"generate_and_play_test_data", ""};
   const command_line::arg_descriptor<bool>        arg_test_transactions           = {"test_transactions", ""};
+  const command_line::arg_descriptor<bool>        arg_test_transactions_ledger    = {"test_transactions_ledger", ""};
   const command_line::arg_descriptor<std::string> arg_filter                      = { "filter", "Regular expression filter for which tests to run" };
   const command_line::arg_descriptor<bool>        arg_list_tests                  = {"list_tests", ""};
 }
@@ -67,6 +69,7 @@ int main(int argc, char* argv[])
   command_line::add_arg(desc_options, arg_play_test_data);
   command_line::add_arg(desc_options, arg_generate_and_play_test_data);
   command_line::add_arg(desc_options, arg_test_transactions);
+  command_line::add_arg(desc_options, arg_test_transactions_ledger);
   command_line::add_arg(desc_options, arg_filter);
   command_line::add_arg(desc_options, arg_list_tests);
 
@@ -322,6 +325,10 @@ int main(int argc, char* argv[])
   else if (command_line::get_arg(vm, arg_test_transactions))
   {
     CALL_TEST("TRANSACTIONS TESTS", test_transactions);
+  }
+  else if (command_line::get_arg(vm, arg_test_transactions_ledger))
+  {
+    CALL_TEST("TRANSACTIONS TESTS ON LEDGER DEVICES", test_transactions_ledger);
   }
   else
   {

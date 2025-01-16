@@ -39,6 +39,7 @@ set(core_tests_sources
   multisig.cpp
   ring_signature_1.cpp
   transaction_tests.cpp
+  transaction_tests_ledger.cpp
   tx_validation.cpp
   tx_pool.cpp
   v2_tests.cpp
