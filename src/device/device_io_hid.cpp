@@ -156,7 +156,7 @@ namespace hw {
 
       hwdev_info_list = hid_enumerate(vid, pid);
       if (!hwdev_info_list) {
-        MDEBUG("Unable to enumerate device "+std::to_string(vid)+":"+std::to_string(vid)+  ": "+ safe_hid_error(this->usb_device));
+        MDEBUG("Unable to enumerate device "+std::to_string(vid)+":"+std::to_string(pid)+  ": "+ safe_hid_error(this->usb_device));
         return NULL;
       }
       hwdev = NULL;
