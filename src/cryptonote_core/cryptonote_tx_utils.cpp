@@ -218,13 +218,18 @@ namespace cryptonote
     amount_keys.clear();
 
     tx.version = rct ? 2 : 1;
-    tx.unlock_time = 234;
+#ifndef LEDGER_TEST
+    tx.unlock_time = 0;
+#else
+    tx.unlock_time = 2147483650;
+#endif /* #ifndef LEDGER_TEST */
 
     tx.extra = extra;
     crypto::public_key txkey_pub;
 
     // if we have a stealth payment id, find it and encrypt it with the tx key now
     std::vector<tx_extra_field> tx_extra_fields;
+#ifndef LEDGER_TEST
     if (parse_tx_extra(tx.extra, tx_extra_fields))
     {
       bool add_dummy_payment_id = true;
@@ -298,6 +303,9 @@ namespace cryptonote
       MWARNING("Failed to parse tx extra");
       tx_extra_fields.clear();
     }
+#else
+    tx_extra_fields.clear();
+#endif /* #ifndef LEDGER_TEST */
 
     struct input_generation_context_data
     {
@@ -321,6 +329,7 @@ namespace cryptonote
       //key_derivation recv_derivation;
       in_contexts.push_back(input_generation_context_data());
       keypair& in_ephemeral = in_contexts.back().in_ephemeral;
+#ifndef LEDGER_TEST
       crypto::key_image img;
       const auto& out_key = reinterpret_cast<const crypto::public_key&>(src_entr.outputs[src_entr.real_output].second.dest);
       if(!generate_key_image_helper(sender_account_keys, subaddresses, out_key, src_entr.real_out_tx_key, src_entr.real_out_additional_tx_keys, src_entr.real_output_in_tx_index, in_ephemeral,img, hwdev))
@@ -351,6 +360,7 @@ namespace cryptonote
 
       input_to_key.key_offsets = absolute_output_offsets_to_relative(input_to_key.key_offsets);
       tx.vin.push_back(input_to_key);
+#endif /* #ifndef LEDGER_TEST */
     }
 
     if (shuffle_outs)
@@ -591,14 +601,19 @@ namespace cryptonote
       get_transaction_prefix_hash(tx, tx_prefix_hash, hwdev);
       rct::ctkeyV outSk;
       if (use_simple_rct)
-        tx.rct_signatures = rct::genRctSimple(rct::hash2rct(tx_prefix_hash), inSk, destinations, inamounts, outamounts, amount_in - amount_out, mixRing, amount_keys, index, outSk, rct_config, hwdev);
+#ifndef LEDGER_TEST
+    tx.rct_signatures = rct::genRctSimple(rct::hash2rct(tx_prefix_hash), inSk, destinations, inamounts, outamounts, amount_in - amount_out, mixRing, amount_keys, index, outSk, rct_config, hwdev);
+#else
+    tx.rct_signatures = rct::genRctSimple(rct::hash2rct(tx_prefix_hash), inSk, destinations, inamounts, outamounts, 100000000 /*amount_in - amount_out*/, mixRing, amount_keys, index, outSk, rct_config, hwdev);
+#endif /* #ifndef LEDGER_TEST */
       else
         tx.rct_signatures = rct::genRct(rct::hash2rct(tx_prefix_hash), inSk, destinations, outamounts, mixRing, amount_keys, sources[0].real_output, outSk, rct_config, hwdev); // same index assumption
       memwipe(inSk.data(), inSk.size() * sizeof(rct::ctkey));
 
       CHECK_AND_ASSERT_MES(tx.vout.size() == outSk.size(), false, "outSk size does not match vout");
-
+#ifndef LEDGER_TEST
       MCINFO("construct_tx", "transaction_created: " << get_transaction_hash(tx) << ENDL << obj_to_json_str(tx) << ENDL);
+#endif /* #ifndef LEDGER_TEST */
     }
 
     tx.invalidate_hashes();

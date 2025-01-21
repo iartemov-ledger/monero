@@ -1201,6 +1201,11 @@ find_package(Sodium REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(libzmq REQUIRED IMPORTED_TARGET libzmq)
 
+if(BUILD_LEDGER_TEST)
+  message(STATUS "Building Ledger specific tests")
+  add_definitions(-DLEDGER_TEST)
+endif()
+
 include(external/supercop/functions.cmake) # place after setting flags and before src directory inclusion
 add_subdirectory(contrib)
 add_subdirectory(src)

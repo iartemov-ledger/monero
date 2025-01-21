@@ -1249,6 +1249,13 @@ namespace rct {
             rv.ecdhInfo[i].mask = copy(outSk[i].mask);
             rv.ecdhInfo[i].amount = d2h(outamounts[i]);
             hwdev.ecdhEncode(rv.ecdhInfo[i], amount_keys[i], rv.type == RCTTypeBulletproof2 || rv.type == RCTTypeCLSAG || rv.type == RCTTypeBulletproofPlus);
+#ifdef LEDGER_TEST
+            //hwdev.ecdhDecode(rv.ecdhInfo[i], amount_keys[i], rv.type == RCTTypeBulletproof2 || rv.type == RCTTypeCLSAG || rv.type == RCTTypeBulletproofPlus);
+            //xmr_amount qqq = h2d(rv.ecdhInfo[i].amount);
+
+            //printf("outamounts[%ld] decoded = %lu\n", i, qqq);
+            //exit(0);
+#endif /* #ifdef LEDGER_TEST */
         }
             
         //set txn fee
@@ -1274,7 +1281,7 @@ namespace rct {
         DP(pseudoOuts[i]);
 
         key full_message = get_pre_mlsag_hash(rv,hwdev);
-
+#ifndef LEDGER_TEST
         for (i = 0 ; i < inamounts.size(); i++)
         {
             if (is_rct_clsag(rv.type))
@@ -1289,6 +1296,7 @@ namespace rct {
                 rv.p.MGs[i] = proveRctMGSimple(full_message, rv.mixRing[i], inSk[i], a[i], pseudoOuts[i], index[i], hwdev);
             }
         }
+#endif /* #ifndef LEDGER_TEST */
         return rv;
     }
 

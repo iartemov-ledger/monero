@@ -39,7 +39,6 @@ set(core_tests_sources
   multisig.cpp
   ring_signature_1.cpp
   transaction_tests.cpp
-  transaction_tests_ledger.cpp
   tx_validation.cpp
   tx_pool.cpp
   v2_tests.cpp
@@ -48,6 +47,11 @@ set(core_tests_sources
   bulletproof_plus.cpp
   rct2.cpp
   wallet_tools.cpp)
+
+if(BUILD_LEDGER_TEST)
+  message(STATUS "Adding Ledger unit file")
+  set(core_tests_sources "${core_tests_sources};transaction_tests_ledger.cpp")
+endif()
 
 set(core_tests_headers
   block_reward.h
